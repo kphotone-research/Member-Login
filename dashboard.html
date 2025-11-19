@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard | Kphotone Research</title>
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
+</head>
+<body>
+<header>
+    <h1>Kphotone Research - Dashboard</h1>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+</header>
+
+<div class="dashboard-container">
+    <h2>Your Participation History & Rewards</h2>
+    <table class="table" id="historyTable">
+        <thead>
+            <tr>
+                <th>Project Name</th>
+                <th>Status</th>
+                <th>Reward</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<script>
+const supabaseUrl = "https://qbezfrqsojypxpmyblbc.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFiZXpmcnFzb2p5cHhwbXlibGJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQwMjIxNDgsImV4cCI6MjA1OTU5ODE0OH0.FwfbMTlfPQ17OpoMXR3zDL13lwHwm3QlblV5dmHfEVc"; // replace with your anon key
+const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+async function loadDashboard(){
+    const session = JSON.parse(localStorage.getItem("supabaseSession"));
+    if(!session) { window.location.href="login.html"; return; }
+
+    supabase.auth.setSession(session);
+
+    const user = supabase.auth.getUser();
+    if(!user) { window.location.href="login.html"; return; }
+
+    const { data, error } = await supabase.from("physician_rewards").select("*").eq("email", session.user.email);
+
+    const tbody = document.getElementById("historyTable").querySelector("tbody");
+    tbody.innerHTML = "";
+
+    if(error){ tbody.innerHTML = `<tr><td colspan="4">Error loading data: ${error.message}</td></tr>`; return; }
+    if(data.length===0){ tbody.innerHTML = `<tr><td colspan="4">No records found.</td></tr>`; return; }
+
+    data.forEach(item=>{
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>${item.project_name}</td>
+            <td>${item.status}</td>
+            <td>${item.reward}</td>
+            <td>${new Date(item.date).toLocaleDateString()}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+function logout(){
+    localStorage.removeItem("supabaseSession");
+    window.location.href="login.html";
+}
+
+window.onload = loadDashboard;
+</script>
+</body>
+</html>
