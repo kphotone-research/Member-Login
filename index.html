@@ -32,7 +32,7 @@
 
 <script>
 const supabaseUrl = "https://qbezfrqsojypxpmyblbc.supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFiZXpmcnFzb2p5cHhwbXlibGJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQwMjIxNDgsImV4cCI6MjA1OTU5ODE0OH0.FwfbMTlfPQ17OpoMXR3zDL13lwHwm3QlblV5dmHfEVc"; // replace with your key
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFiZXpmcnFzb2p5cHhwbXlibGJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQwMjIxNDgsImV4cCI6MjA1OTU5ODE0OH0.FwfbMTlfPQ17OpoMXR3zDL13lwHwm3QlblV5dmHfEVc"; // replace with your anon key
 const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
 const loginBtn = document.getElementById("loginBtn");
@@ -62,18 +62,12 @@ signupBtn.addEventListener("click", async () => {
   if (!email || !password) { alert("Enter email & password"); return; }
   loginMsg.textContent = "Creating account..."; loginMsg.style.color="#333";
 
-  // Check if email already exists
-  const { data: existingUser } = await supabase.auth.admin.listUsers();
-  if (existingUser.find(u => u.email === email)) {
-    loginMsg.textContent = "❌ Email already exists. Try login."; loginMsg.style.color="red";
-    return;
-  }
-
   const { data, error } = await supabase.auth.signUp({ email, password });
+
   if (error) {
     loginMsg.textContent = "❌ " + error.message; loginMsg.style.color="red";
   } else {
-    // Insert into physicians table
+    // Insert physician profile (if new)
     await supabase.from("physicians").insert([{ id: data.user.id, email, name:"", specialty:"" }]);
     loginMsg.textContent = "✅ Account created! Redirecting..."; loginMsg.style.color="green";
     setTimeout(()=> window.location.href = "dashboard.html", 1500);
