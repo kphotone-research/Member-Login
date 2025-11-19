@@ -1,0 +1,93 @@
+/* Kphotone Color Theme */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin:0; padding:0;
+    background-color:#f9f9f9;
+    color:#003356;
+}
+
+header {
+    background-color:#fff;
+    padding:15px 20px;
+    box-shadow:0 1px 4px rgba(0,0,0,0.1);
+    text-align:center;
+}
+
+h1,h2,h3 { color:#003356; }
+
+button {
+    background-color:#007bff;
+    color:#fff;
+    border:none;
+    padding:10px 18px;
+    border-radius:5px;
+    cursor:pointer;
+    font-size:1rem;
+    transition:0.3s;
+}
+
+button:hover { background-color:#005bb5; }
+
+input {
+    width:100%;
+    padding:12px;
+    border-radius:6px;
+    border:1px solid #ccc;
+    margin-bottom:15px;
+    font-size:1rem;
+    box-sizing:border-box;
+}
+
+.container {
+    max-width:500px;
+    margin:60px auto;
+    padding:30px;
+    background:#fff;
+    border-radius:12px;
+    box-shadow:0 8px 16px rgba(0,0,0,0.1);
+}
+
+.message {
+    font-size:0.95rem;
+    margin-top:10px;
+    color:#333;
+}
+
+.dashboard-container {
+    max-width:900px;
+    margin:50px auto;
+    padding:20px;
+    background:#fff;
+    border-radius:12px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.1);
+}
+
+.table {
+    width:100%;
+    border-collapse:collapse;
+    margin-top:20px;
+}
+
+.table th, .table td {
+    border:1px solid #ddd;
+    padding:12px;
+    text-align:left;
+}
+
+.table th {
+    background-color:#007bff;
+    color:#fff;
+}
+
+.logout-btn {
+    float:right;
+    background-color:#f44336;
+}
+
+.logout-btn:hover {
+    background-color:#c12f2f;
+}
+
+@media(max-width:600px){
+    .container, .dashboard-container { width:90%; margin:20px auto; padding:20px; }
+}
