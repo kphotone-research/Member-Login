@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physician Login | Kphotone Research</title>
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
+</head>
+<body>
+<header><h1>Kphotone Research - Member Login</h1></header>
+
+<div class="container">
+    <h2>Login to Dashboard</h2>
+    <input type="email" id="email" placeholder="Enter your email">
+    <input type="password" id="password" placeholder="Enter your password">
+    <button onclick="login()">Login</button>
+    <p class="message" id="message"></p>
+</div>
+
+<script>
+const supabaseUrl = "https://qbezfrqsojypxpmyblbc.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFiZXpmcnFzb2p5cHhwbXlibGJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQwMjIxNDgsImV4cCI6MjA1OTU5ODE0OH0.FwfbMTlfPQ17OpoMXR3zDL13lwHwm3QlblV5dmHfEVc"; // replace with your anon key
+const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+async function login() {
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const msgEl = document.getElementById("message");
+
+    if(!email || !password){ msgEl.textContent="Enter email and password."; return; }
+
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+    if(error){
+        msgEl.textContent = "❌ " + error.message;
+        msgEl.style.color="red";
+    } else {
+        msgEl.textContent = "✅ Login successful!";
+        msgEl.style.color="green";
+        // Save session token in localStorage
+        localStorage.setItem("supabaseSession", JSON.stringify(data.session));
+        setTimeout(()=> window.location.href="dashboard.html", 1000);
+    }
+}
+</script>
+</body>
+</html>
