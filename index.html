@@ -3,46 +3,189 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Physician Login | Kphotone Research</title>
-<link rel="stylesheet" href="styles.css">
+<title>Kphotone Research | Physician Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
+<style>
+  body { font-family: 'Roboto', sans-serif; margin:0; padding:0; background:#f9f9f9; color:#333; }
+  h1,h2,h3 { color:#003356; }
+  .container { max-width:900px; margin:50px auto; padding:20px; background:#fff; border-radius:10px; box-shadow:0 8px 20px rgba(0,0,0,0.1); }
+  input, button { padding:12px; font-size:1rem; border-radius:6px; border:1px solid #ccc; width:100%; margin-bottom:15px; }
+  button { background:#007bff; color:white; border:none; cursor:pointer; transition:0.3s; }
+  button:hover { background:#005bb5; }
+  .message { margin-bottom:15px; font-size:0.95rem; }
+  table { width:100%; border-collapse:collapse; margin-top:20px; }
+  th, td { border:1px solid #ddd; padding:10px; text-align:left; }
+  th { background:#007bff; color:white; }
+  .hidden { display:none; }
+  .toggle-btns { display:flex; gap:10px; margin-bottom:20px; }
+  .toggle-btns button { flex:1; }
+</style>
 </head>
 <body>
-<header><h1>Kphotone Research - Member Login</h1></header>
-
 <div class="container">
-    <h2>Login to Dashboard</h2>
-    <input type="email" id="email" placeholder="Enter your email">
-    <input type="password" id="password" placeholder="Enter your password">
-    <button onclick="login()">Login</button>
-    <p class="message" id="message"></p>
+  <h1>Kphotone Physician Login</h1>
+  
+  <div class="toggle-btns">
+    <button id="loginBtn">Login</button>
+    <button id="signupBtn">Sign Up</button>
+  </div>
+
+  <div id="loginForm">
+    <p class="message" id="loginMessage"></p>
+    <input type="email" id="loginEmail" placeholder="Email" required>
+    <input type="password" id="loginPassword" placeholder="Password" required>
+    <button onclick="loginPhysician()">Login</button>
+  </div>
+
+  <div id="signupForm" class="hidden">
+    <p class="message" id="signupMessage"></p>
+    <input type="text" id="signupName" placeholder="Full Name" required>
+    <input type="email" id="signupEmail" placeholder="Email" required>
+    <input type="text" id="signupSpecialty" placeholder="Specialty" required>
+    <input type="password" id="signupPassword" placeholder="Password" required>
+    <button onclick="signupPhysician()">Sign Up</button>
+  </div>
+
+  <div id="dashboard" class="hidden">
+    <h2>Welcome, <span id="physicianName"></span></h2>
+    <p id="dashboardMessage"></p>
+    <table id="historyTable">
+      <thead>
+        <tr>
+          <th>Project Number</th>
+          <th>Project Title</th>
+          <th>Status</th>
+          <th>Honorarium</th>
+          <th>Completion Date</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <button onclick="logoutPhysician()">Logout</button>
+  </div>
 </div>
 
 <script>
-const supabaseUrl = "https://qbezfrqsojypxpmyblbc.supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFiZXpmcnFzb2p5cHhwbXlibGJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQwMjIxNDgsImV4cCI6MjA1OTU5ODE0OH0.FwfbMTlfPQ17OpoMXR3zDL13lwHwm3QlblV5dmHfEVc"; // replace with your anon key
-const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+  // Supabase config
+  const supabaseUrl = "https://qbezfrqsojypxpmyblbc.supabase.co";
+  const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFiZXpmcnFzb2p5cHhwbXlibGJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQwMjIxNDgsImV4cCI6MjA1OTU5ODE0OH0.FwfbMTlfPQ17OpoMXR3zDL13lwHwm3QlblV5dmHfEVc";
+  const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-async function login() {
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value.trim();
-    const msgEl = document.getElementById("message");
+  // Toggle forms
+  const loginForm = document.getElementById('loginForm');
+  const signupForm = document.getElementById('signupForm');
+  const loginMessage = document.getElementById('loginMessage');
+  const signupMessage = document.getElementById('signupMessage');
+  const dashboard = document.getElementById('dashboard');
+  const physicianNameEl = document.getElementById('physicianName');
+  const dashboardMessage = document.getElementById('dashboardMessage');
+  const historyTableBody = document.querySelector('#historyTable tbody');
 
-    if(!email || !password){ msgEl.textContent="Enter email and password."; return; }
+  document.getElementById('loginBtn').addEventListener('click', ()=>{
+    loginForm.classList.remove('hidden');
+    signupForm.classList.add('hidden');
+  });
+  document.getElementById('signupBtn').addEventListener('click', ()=>{
+    signupForm.classList.remove('hidden');
+    loginForm.classList.add('hidden');
+  });
 
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  // Login function
+  async function loginPhysician() {
+    loginMessage.textContent = '';
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value.trim();
+    if(!email || !password){ loginMessage.textContent='Please enter email and password.'; return; }
 
-    if(error){
-        msgEl.textContent = "❌ " + error.message;
-        msgEl.style.color="red";
+    const { data: session, error } = await supabase.auth.signInWithPassword({ email, password });
+    if(error){ loginMessage.textContent=error.message; return; }
+
+    loadDashboard();
+  }
+
+  // Sign-up function
+  async function signupPhysician() {
+    signupMessage.textContent = '';
+    const name = document.getElementById('signupName').value.trim();
+    const email = document.getElementById('signupEmail').value.trim();
+    const specialty = document.getElementById('signupSpecialty').value.trim();
+    const password = document.getElementById('signupPassword').value.trim();
+    if(!name || !email || !specialty || !password){ signupMessage.textContent='All fields are required.'; return; }
+
+    // Check if physician already exists
+    const { data: existing, error: checkError } = await supabase
+      .from('physicians')
+      .select('id')
+      .eq('email', email)
+      .single();
+
+    if(existing){ signupMessage.textContent='Email already registered. Please login.'; return; }
+
+    // Create auth user
+    const { data: authData, error: authError } = await supabase.auth.signUp({ email, password });
+    if(authError){ signupMessage.textContent=authError.message; return; }
+
+    // Insert physician profile
+    await supabase.from('physicians').insert({
+      id: authData.user.id,
+      name, email, specialty
+    });
+
+    signupMessage.textContent='Sign-up successful! Redirecting to dashboard...';
+    setTimeout(loadDashboard, 1000);
+  }
+
+  // Load dashboard
+  async function loadDashboard() {
+    const { data: user, error } = await supabase.auth.getUser();
+    if(error || !user){ loginMessage.textContent='Session expired. Please login again.'; return; }
+
+    const uid = user.user.id;
+
+    // Fetch physician profile
+    const { data: profile } = await supabase.from('physicians').select('*').eq('id', uid).single();
+    physicianNameEl.textContent = profile?.name || 'Physician';
+
+    // Fetch participation history
+    const { data: history } = await supabase.from('participation_history')
+      .select('*')
+      .eq('physician_id', uid)
+      .order('created_at', { ascending:false });
+
+    loginForm.classList.add('hidden');
+    signupForm.classList.add('hidden');
+    dashboard.classList.remove('hidden');
+
+    if(history.length === 0){
+      dashboardMessage.textContent = 'Thank you for signing up! Your participation history will appear here after completing projects.';
+      historyTableBody.innerHTML = '';
     } else {
-        msgEl.textContent = "✅ Login successful!";
-        msgEl.style.color="green";
-        // Save session token in localStorage
-        localStorage.setItem("supabaseSession", JSON.stringify(data.session));
-        setTimeout(()=> window.location.href="dashboard.html", 1000);
+      dashboardMessage.textContent = '';
+      historyTableBody.innerHTML = history.map(h => `
+        <tr>
+          <td>${h.project_number}</td>
+          <td>${h.project_title}</td>
+          <td>${h.status}</td>
+          <td>$${h.honorarium}</td>
+          <td>${h.completion_date ? new Date(h.completion_date).toLocaleDateString() : '-'}</td>
+        </tr>
+      `).join('');
     }
-}
+  }
+
+  // Logout
+  async function logoutPhysician() {
+    await supabase.auth.signOut();
+    dashboard.classList.add('hidden');
+    loginForm.classList.remove('hidden');
+  }
+
+  // Auto-load if already logged in
+  window.onload = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if(user) loadDashboard();
+  }
 </script>
 </body>
 </html>
