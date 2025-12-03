@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Kphotone — Physician Enrollment</title>
+<title>Join Kphotone Healthcare Network</title>
 <style>
   :root{
     --kp-blue:#00306E;
@@ -12,19 +12,23 @@
     --bg:#f7fafc;
     --card:#fff;
     --radius:12px;
-    --maxw:900px;
+    --maxw:980px;
   }
-  body{ background:var(--bg); font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial; margin:0; padding:28px; display:flex; justify-content:center; }
-  .card{ width:100%; max-width:var(--maxw); background:var(--card); border-radius:var(--radius); box-shadow:0 10px 30px rgba(2,6,23,0.07); border-top:6px solid var(--kp-blue); padding:28px; }
-  h1{ margin:0 0 6px 0; color:var(--kp-blue); font-size:22px; }
-  p.lead{ margin:0 0 16px 0; color:var(--muted); }
+  *{box-sizing:border-box}
+  body{ background:var(--bg); font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial; margin:0; padding:32px 20px; display:flex; justify-content:center; }
+  .card{ width:100%; max-width:var(--maxw); background:var(--card); border-radius:var(--radius); box-shadow:0 12px 36px rgba(2,6,23,0.07); border-top:6px solid var(--kp-blue); padding:28px; }
+  header{ text-align:center; margin-bottom:10px; }
+  #kp-logo{ max-height:72px; object-fit:contain; display:block; margin:0 auto 10px auto; }
+  h1{ margin:6px 0 4px; color:var(--kp-blue); font-size:22px; }
+  p.lead{ margin:0 0 18px 0; color:var(--muted); }
   form{ display:grid; gap:12px; }
   label{ font-size:13px; color:#1f2937; display:block; margin-bottom:6px; }
   input[type="text"], input[type="email"], input[type="tel"], select, textarea{
     width:100%; padding:10px 12px; border-radius:10px; border:1px solid #e6e9ee; font-size:14px; box-sizing:border-box;
   }
+  textarea{ min-height:100px; resize:vertical; }
   .row{ display:flex; gap:12px; }
-  .col{ flex:1; }
+  .col{ flex:1; min-width:0; }
   .btn{ background:var(--kp-blue); color:#fff; padding:12px 16px; border-radius:10px; border:none; font-weight:600; cursor:pointer; }
   .small{ font-size:13px; color:var(--muted); }
   .success{ padding:12px; background:#ecfdf5; color:#065f46; border-radius:10px; margin-top:8px; }
@@ -33,13 +37,16 @@
 </style>
 </head>
 <body>
-  <div class="card">
-    <h1>Physician Panel Enrollment</h1>
-    <p class="lead">Join the Kphotone physician panel. Fill in accurate details — all data stored securely.</p>
+  <div class="card" role="main">
+    <header>
+      <img id="kp-logo" src="https://raw.githubusercontent.com/kphotone-research/Images-kphotone/main/Logo.png" alt="Kphotone logo">
+      <h1>Join Kphotone Healthcare Network</h1>
+      <p class="lead">Register to join our community of healthcare professionals for paid research and collaboration.</p>
+    </header>
 
     <div id="messages" aria-live="polite"></div>
 
-    <form id="enrollForm" autocomplete="on">
+    <form id="enrollForm" autocomplete="on" novalidate>
 
       <!-- Personal -->
       <div class="row">
@@ -99,22 +106,67 @@
       <div class="row">
         <div class="col">
           <label for="specialty">Primary Specialty *</label>
-          <select id="specialty" name="specialty" required>
-            <option value="">Select specialty</option>
-            <option>Dermatology</option>
-            <option>MOH Dermatology</option>
-            <option>Oncology</option>
-            <option>Hematology-Oncology</option>
-            <option>Surgery</option>
-            <option>Radiation Oncology</option>
-            <option>Cosmetology</option>
-            <option>General Medicine</option>
-            <option>Pediatrics</option>
-            <option>Endocrinology</option>
-            <option>Cardiology</option>
-            <option>Neurology</option>
-            <option>Other</option>
-          </select>
+          <!-- single-select searchable via datalist -->
+          <input list="specialtiesList" id="specialty" name="specialty" placeholder="Type to search or choose..." autocomplete="off" required />
+          <datalist id="specialtiesList">
+            <!-- Medical & allied specialties (extended list) -->
+            <option>Allied Health Professional</option>
+            <option>Anesthesiologist</option>
+            <option>Cardiologist</option>
+            <option>Cardiac Surgeon</option>
+            <option>Clinical Research Coordinator</option>
+            <option>Clinical Psychologist</option>
+            <option>Dermatologist</option>
+            <option>Dermatology Nurse</option>
+            <option>Emergency Medicine</option>
+            <option>Endocrinologist</option>
+            <option>ENT Specialist</option>
+            <option>Family Physician</option>
+            <option>General Practitioner</option>
+            <option>Geriatrician</option>
+            <option>Hematologist</option>
+            <option>Hematology-Oncologist</option>
+            <option>Immunologist</option>
+            <option>Intensivist</option>
+            <option>Internal Medicine</option>
+            <option>Nephrologist</option>
+            <option>Neurologist</option>
+            <option>Neurosurgeon</option>
+            <option>Nurse Practitioner</option>
+            <option>Registered Nurse (RN)</option>
+            <option>Clinical Nurse Specialist</option>
+            <option>Nurse Anesthetist</option>
+            <option>Obstetrician / Gynaecologist</option>
+            <option>Oncologist</option>
+            <option>Ophthalmologist</option>
+            <option>Orthopedic Surgeon</option>
+            <option>Orthoptist</option>
+            <option>Otolaryngologist</option>
+            <option>Palliative Care Specialist</option>
+            <option>Pathologist</option>
+            <option>Pharmacist</option>
+            <option>Pharmacy Technician</option>
+            <option>Pediatrician</option>
+            <option>Pediatric Nurse</option>
+            <option>Physiotherapist</option>
+            <option>Physical Therapist Assistant</option>
+            <option>Plastic Surgeon</option>
+            <option>Primary Care Nurse</option>
+            <option>Psychiatrist</option>
+            <option>Radiologist</option>
+            <option>Radiation Oncologist</option>
+            <option>Radiographer</option>
+            <option>Respiratory Therapist</option>
+            <option>Research Scientist</option>
+            <option>Rehabilitation Specialist</option>
+            <option>Surgical Nurse</option>
+            <option>Surgeon</option>
+            <option>Speech and Language Therapist</option>
+            <option>Specialist Nurse</option>
+            <option>Trauma Surgeon</option>
+            <option>Clinical Pharmacologist</option>
+            <option>Other (please specify)</option>
+          </datalist>
         </div>
         <div class="col">
           <label for="subspecialty">Sub-specialty (optional)</label>
@@ -184,11 +236,12 @@
 
       <label style="display:flex;gap:8px;align-items:center;">
         <input id="consent" name="consent" type="checkbox" required />
-        <span class="small">I confirm I am a licensed medical professional and agree to be contacted for paid surveys. (Required)</span>
+        <span class="small">I confirm I am a licensed healthcare professional and agree to be contacted for paid surveys. (Required)</span>
       </label>
 
       <div style="display:flex;gap:12px;align-items:center;margin-top:8px;">
         <button class="btn" type="submit">Submit Enrollment</button>
+        <div class="small" style="margin-left:8px;">Data will be recorded securely in Google Sheets.</div>
       </div>
 
     </form>
@@ -197,53 +250,66 @@
   </div>
 
 <script>
-const GOOGLE_WEBAPP_URL =
-  "https://script.google.com/macros/s/AKfycbwYLEFLreMoNDYpR5pUdf2apaSg1b1IHWFIcdAWiLr7G9OSIsQDXQS0VTYIMFytHXBIIw/exec";
+  // Final Google Web App URL (confirmed)
+  const GOOGLE_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwYLEFLreMoNDYpR5pUdf2apaSg1b1IHWFIcdAWiLr7G9OSIsQDXQS0VTYIMFytHXBIIw/exec";
 
-const form = document.getElementById("enrollForm");
-const messagesEl = document.getElementById("messages");
+  const form = document.getElementById("enrollForm");
+  const messagesEl = document.getElementById("messages");
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    messagesEl.innerHTML = "";
 
-  const payload = {
-    full_name: form.full_name.value,
-    email: form.email.value,
-    phone: form.phone.value,
-    gender: form.gender.value,
-    medical_license_number: form.medical_license_number.value,
-    registration_id: form.registration_id.value,
-    country: form.country.value,
-    state: form.state.value,
-    city: form.city.value,
-    specialty: form.specialty.value,
-    subspecialty: form.subspecialty.value,
-    experience_years: form.experience_years.value,
-    patient_volume: form.patients_month.value,
-    practice_type: form.practice_type.value,
-    willing_for_surveys: form.willing_for_surveys.value,
-    contact_pref: form.contact_pref.value,
-    notes: form.notes.value,
-    consent: form.consent.checked ? "Yes" : "No",
-  };
+    // read values
+    const payload = {
+      full_name: document.getElementById("full_name").value.trim(),
+      email: document.getElementById("email").value.trim(),
+      phone: document.getElementById("phone").value.trim(),
+      gender: document.getElementById("gender").value,
+      medical_license_number: document.getElementById("medical_license_number").value.trim(),
+      registration_id: document.getElementById("registration_id").value.trim(),
+      country: document.getElementById("country").value.trim(),
+      state: document.getElementById("state").value.trim(),
+      city: document.getElementById("city").value.trim(),
+      specialty: document.getElementById("specialty").value.trim(),
+      subspecialty: document.getElementById("subspecialty").value.trim(),
+      experience_years: document.getElementById("experience_years").value,
+      patient_volume: document.getElementById("patients_month").value,
+      practice_type: document.getElementById("practice_type").value,
+      willing_for_surveys: document.getElementById("willing_for_surveys").value,
+      contact_pref: document.getElementById("contact_pref").value,
+      notes: document.getElementById("notes").value.trim(),
+      consent: document.getElementById("consent").checked ? "Yes" : "No"
+    };
 
-  messagesEl.innerHTML = "<div class='success'>Submitting...</div>";
+    // basic validation
+    if(!payload.full_name || !payload.email || !payload.phone || !payload.medical_license_number || !payload.country || !payload.state || !payload.city || !payload.specialty || !payload.experience_years || payload.consent === "No"){
+      messagesEl.innerHTML = '<div class="error">Please fill required fields and confirm consent.</div>';
+      return;
+    }
 
-  fetch(GOOGLE_WEBAPP_URL, {
-    method: "POST",
-    mode: "no-cors",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
+    // show submitting message
+    messagesEl.innerHTML = "<div class='success'>Submitting...</div>";
+    const btn = form.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.textContent = "Submitting...";
+
+    // send to Google Apps Script (no-cors)
+    fetch(GOOGLE_WEBAPP_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    // show thank-you and redirect — cannot read response with no-cors
+    messagesEl.innerHTML = `<div class="success"><strong>Thank you for enrolling!</strong><br/>We have received your details. Redirecting to Kphotone...</div>`;
+    form.reset();
+
+    setTimeout(() => {
+      window.location.href = "https://www.kphotone.com";
+    }, 3000);
   });
-
-  messagesEl.innerHTML =
-    `<div class="success"><strong>Thank you for enrolling!</strong><br>Your details are submitted successfully. Redirecting...</div>`;
-  form.reset();
-
-  setTimeout(() => {
-    window.location.href = "https://www.kphotone.com";
-  }, 3000);
-});
 </script>
 
 </body>
