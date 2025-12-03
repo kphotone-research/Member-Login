@@ -1,270 +1,221 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Kphotone — Physician Enrollment</title>
+<meta charset="UTF-8">
+<title>Physician Enrollment - KPhotone</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
 <style>
-  :root{
-    --kp-blue:#00306E;
-    --kp-accent:#00A6FB;
-    --muted:#6b7280;
-    --bg:#f7fafc;
-    --card:#fff;
-    --radius:12px;
-    --maxw:900px;
-  }
-  body{ background:var(--bg); font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial; margin:0; padding:28px; display:flex; justify-content:center; }
-  .card{ width:100%; max-width:var(--maxw); background:var(--card); border-radius:var(--radius); box-shadow:0 10px 30px rgba(2,6,23,0.07); border-top:6px solid var(--kp-blue); padding:28px; }
-  h1{ margin:0 0 6px 0; color:var(--kp-blue); font-size:22px; }
-  p.lead{ margin:0 0 16px 0; color:var(--muted); }
-  form{ display:grid; gap:12px; }
-  label{ font-size:13px; color:#1f2937; display:block; margin-bottom:6px; }
-  input[type="text"], input[type="email"], input[type="tel"], select, textarea{
-    width:100%; padding:10px 12px; border-radius:10px; border:1px solid #e6e9ee; font-size:14px; box-sizing:border-box;
-  }
-  .row{ display:flex; gap:12px; }
-  .col{ flex:1; }
-  .btn{ background:var(--kp-blue); color:#fff; padding:12px 16px; border-radius:10px; border:none; font-weight:600; cursor:pointer; }
-  .small{ font-size:13px; color:var(--muted); }
-  .success{ padding:12px; background:#ecfdf5; color:#065f46; border-radius:10px; margin-top:8px; }
-  .error{ padding:12px; background:#fee2e2; color:#991b1b; border-radius:10px; margin-top:8px; }
-  @media (max-width:760px){ .row{ flex-direction:column; } }
+    body {
+        font-family: Arial, sans-serif;
+        background: #f7f9fc;
+        margin: 0;
+        padding: 20px;
+    }
+    .container {
+        max-width: 700px;
+        margin: auto;
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        border-top: 6px solid #0058A3;
+    }
+    h2 {
+        text-align: center;
+        color: #0058A3;
+        margin-bottom: 20px;
+    }
+    label {
+        display: block;
+        margin-top: 15px;
+        font-weight: bold;
+        color: #003b6f;
+    }
+    input, select, textarea {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        font-size: 15px;
+    }
+    textarea { height: 80px; }
+    button {
+        width: 100%;
+        margin-top: 25px;
+        padding: 12px;
+        background: #0058A3;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    button:hover {
+        background: #004b8a;
+    }
+    .success {
+        background: #d1f8d1;
+        padding: 12px;
+        border-left: 5px solid #2e8b57;
+        margin-top: 20px;
+    }
 </style>
 </head>
+
 <body>
-  <div class="card">
-    <h1>Physician Panel Enrollment</h1>
-    <p class="lead">Join the Kphotone physician panel. Fill in accurate details — all data stored securely.</p>
+<div class="container">
+    <h2>Physician Enrollment Form</h2>
 
-    <div id="messages" aria-live="polite"></div>
+    <form id="enrollForm">
 
-    <form id="enrollForm" autocomplete="on">
+        <label>Full Name</label>
+        <input id="full_name" required>
 
-      <!-- Personal -->
-      <div class="row">
-        <div class="col">
-          <label for="full_name">Full Name *</label>
-          <input id="full_name" name="full_name" type="text" required />
-        </div>
-        <div class="col">
-          <label for="email">Email *</label>
-          <input id="email" name="email" type="email" required />
-        </div>
-      </div>
+        <label>Email</label>
+        <input type="email" id="email" required>
 
-      <div class="row">
-        <div class="col">
-          <label for="phone">Mobile / WhatsApp *</label>
-          <input id="phone" name="phone" type="tel" placeholder="+91..." required />
-        </div>
-        <div class="col">
-          <label for="gender">Gender</label>
-          <select id="gender" name="gender">
-            <option value="">Prefer not to say</option>
+        <label>Phone</label>
+        <input id="phone">
+
+        <label>Gender</label>
+        <select id="gender">
+            <option value="">Select</option>
             <option>Male</option>
             <option>Female</option>
             <option>Other</option>
-          </select>
-        </div>
-      </div>
+        </select>
 
-      <!-- Identification -->
-      <label for="medical_license_number">Medical License / Registration ID *</label>
-      <input id="medical_license_number" name="medical_license_number" type="text" required placeholder="NPI / NMC / GMC / DHA / etc." />
+        <label>Medical License Number</label>
+        <input id="medical_license_number">
 
-      <label for="registration_id">Other Identification (optional)</label>
-      <input id="registration_id" name="registration_id" type="text" placeholder="State Council ID / License type" />
+        <label>Registration ID</label>
+        <input id="registration_id">
 
-      <!-- Location: Country, State, City as open text -->
-      <div class="row">
-        <div class="col">
-          <label for="country">Country *</label>
-          <input id="country" name="country" type="text" placeholder="Enter country" required />
-        </div>
-        <div class="col">
-          <label for="state">State / Province *</label>
-          <input id="state" name="state" type="text" placeholder="Enter state / province" required />
-        </div>
-      </div>
+        <label>Country</label>
+        <input id="country" placeholder="Enter Country">
 
-      <div class="row">
-        <div class="col">
-          <label for="city">City *</label>
-          <input id="city" name="city" type="text" placeholder="Enter city" required />
-        </div>
-      </div>
+        <label>State</label>
+        <input id="state" placeholder="Enter State">
 
-      <!-- Professional -->
-      <div class="row">
-        <div class="col">
-          <label for="specialty">Primary Specialty *</label>
-          <select id="specialty" name="specialty" required>
-            <option value="">Select specialty</option>
-            <option>Dermatology</option>
-            <option>MOH Dermatology</option>
-            <option>Oncology</option>
-            <option>Hematology-Oncology</option>
-            <option>Surgery</option>
-            <option>Radiation Oncology</option>
-            <option>Cosmetology</option>
-            <option>General Medicine</option>
-            <option>Pediatrics</option>
-            <option>Endocrinology</option>
-            <option>Cardiology</option>
-            <option>Neurology</option>
+        <label>City</label>
+        <input id="city" placeholder="Enter City">
+
+        <label>Specialty</label>
+        <select id="specialty" required>
+            <option value="">Select</option>
+            <option>Dermatologist</option>
+            <option>MOH Dermatologist</option>
+            <option>Surgeon</option>
+            <option>Radiation Oncologist</option>
+            <option>Hematology-Oncologist</option>
+            <option>Oncologist</option>
+            <option>General Physician</option>
+            <option>Internal Medicine</option>
             <option>Other</option>
-          </select>
-        </div>
-        <div class="col">
-          <label for="subspecialty">Sub-specialty (optional)</label>
-          <input id="subspecialty" name="subspecialty" type="text" />
-        </div>
-      </div>
+        </select>
 
-      <div class="row">
-        <div class="col">
-          <label for="experience_years">Years of Experience *</label>
-          <select id="experience_years" name="experience_years" required>
-            <option value="">Select</option>
-            <option value="<1">&lt;1</option>
-            <option value="1-3">1–3</option>
-            <option value="4-7">4–7</option>
-            <option value="8-12">8–12</option>
-            <option value="13+">13+</option>
-          </select>
-        </div>
-        <div class="col">
-          <label for="patients_month">Patients per month</label>
-          <select id="patients_month" name="patients_month">
-            <option value="">Select</option>
-            <option>0–50</option>
-            <option>51–100</option>
-            <option>101–200</option>
-            <option>201–300</option>
-            <option>301+</option>
-          </select>
-        </div>
-      </div>
+        <label>Subspecialty</label>
+        <input id="subspecialty">
 
-      <label for="practice_type">Practice Type</label>
-      <select id="practice_type" name="practice_type">
-        <option value="">Select</option>
-        <option>Government Hospital</option>
-        <option>Private Clinic</option>
-        <option>Corporate Hospital</option>
-        <option>Teaching Hospital</option>
-        <option>Research Institute</option>
-        <option>Other</option>
-      </select>
+        <label>Years of Experience</label>
+        <input id="experience_years" type="number">
 
-      <div class="row">
-        <div class="col">
-          <label for="willing_for_surveys">Willing to participate in paid surveys?</label>
-          <select id="willing_for_surveys" name="willing_for_surveys">
-            <option value="">Select</option>
-            <option value="true">Yes</option>
-            <option value="false">No</option>
-          </select>
-        </div>
-        <div class="col">
-          <label for="contact_pref">Preferred contact method</label>
-          <select id="contact_pref" name="contact_pref">
-            <option value="">Select</option>
+        <label>Avg. Monthly Patient Volume</label>
+        <input id="patient_volume" type="number">
+
+        <label>Practice Type</label>
+        <select id="practice_type">
+            <option>Private Clinic</option>
+            <option>Government Hospital</option>
+            <option>Corporate Hospital</option>
+            <option>Telemedicine</option>
+            <option>Other</option>
+        </select>
+
+        <label>Willing to Participate in Surveys?</label>
+        <select id="willing_for_surveys">
+            <option>Yes</option>
+            <option>No</option>
+        </select>
+
+        <label>Preferred Contact Method</label>
+        <select id="contact_pref">
             <option>Email</option>
-            <option>WhatsApp</option>
             <option>Phone</option>
-            <option>SMS</option>
-          </select>
-        </div>
-      </div>
+            <option>WhatsApp</option>
+        </select>
 
-      <label for="notes">Notes (optional)</label>
-      <textarea id="notes" name="notes" placeholder="Any additional details..."></textarea>
+        <label>Notes (Optional)</label>
+        <textarea id="notes"></textarea>
 
-      <label style="display:flex;gap:8px;align-items:center;">
-        <input id="consent" name="consent" type="checkbox" required />
-        <span class="small">I confirm I am a licensed medical professional and agree to be contacted for paid surveys. (Required)</span>
-      </label>
+        <label>
+            <input type="checkbox" id="consent" required>
+            I agree to be contacted for research purposes.
+        </label>
 
-      <div style="display:flex;gap:12px;align-items:center;margin-top:8px;">
-        <button class="btn" type="submit">Submit Enrollment</button>
-        <div class="small" style="margin-left:8px;">Data stored in Supabase</div>
-      </div>
+        <button type="submit">Submit Enrollment</button>
+
+        <div id="messages"></div>
 
     </form>
+</div>
 
-    <p class="small" style="margin-top:12px;">Questions? Contact: support@kphotone.com</p>
-  </div>
+<script>
+    const form = document.getElementById("enrollForm");
+    const messagesEl = document.getElementById("messages");
 
-  <!-- Supabase UMD -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
 
-  <script>
-  const SUPABASE_URL = "https://qbezfrqsojypxpmyblbc.supabase.co";
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFiZXpmcnFzb2p5cHhwbXlibGJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQwMjIxNDgsImV4cCI6MjA1OTU5ODE0OH0.FwfbMTlfPQ17OpoMXR3zDL13lwHwm3QlblV5dmHfEVc";
-  const TABLE_NAME = "physician_enrollment";
-  const supabase = supabaseJs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const payload = {
+            full_name: document.getElementById("full_name").value,
+            email: document.getElementById("email").value,
+            phone: document.getElementById("phone").value,
+            gender: document.getElementById("gender").value,
+            medical_license_number: document.getElementById("medical_license_number").value,
+            registration_id: document.getElementById("registration_id").value,
+            country: document.getElementById("country").value,
+            state: document.getElementById("state").value,
+            city: document.getElementById("city").value,
+            specialty: document.getElementById("specialty").value,
+            subspecialty: document.getElementById("subspecialty").value,
+            experience_years: document.getElementById("experience_years").value,
+            patient_volume: document.getElementById("patient_volume").value,
+            practice_type: document.getElementById("practice_type").value,
+            willing_for_surveys: document.getElementById("willing_for_surveys").value,
+            contact_pref: document.getElementById("contact_pref").value,
+            notes: document.getElementById("notes").value,
+            consent: document.getElementById("consent").checked ? "Yes" : "No"
+        };
 
-  const form = document.getElementById('enrollForm');
-  const messagesEl = document.getElementById('messages');
+        messagesEl.innerHTML = "Submitting your information...";
 
-  form.addEventListener('submit', async (ev)=>{
-    ev.preventDefault();
-    messagesEl.innerHTML = "";
+        fetch("https://script.google.com/macros/s/AKfycbwYLEFLreMoNDYpR5pUdf2apaSg1b1IHWFIcdAWiLr7G9OSIsQDXQS0VTYIMFytHXBIIw/exec", {
+            method: "POST",
+            mode: "no-cors",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        });
 
-    const payload = {
-      full_name: form.full_name.value.trim(),
-      email: form.email.value.trim(),
-      phone: form.phone.value.trim(),
-      gender: form.gender.value,
-      medical_license_number: form.medical_license_number.value.trim(),
-      registration_id: form.registration_id.value.trim(),
-      country: form.country.value.trim(),
-      state: form.state.value.trim(),
-      city: form.city.value.trim(),
-      specialty: form.specialty.value,
-      subspecialty: form.subspecialty.value.trim(),
-      experience_years: form.experience_years.value,
-      patient_volume: form.patients_month.value,
-      practice_type: form.practice_type.value,
-      willing_for_surveys: form.willing_for_surveys.value==='true',
-      contact_pref: form.contact_pref.value,
-      notes: form.notes.value.trim(),
-      consent: form.consent.checked,
-      created_at: new Date().toISOString()
-    };
+        messagesEl.innerHTML = `
+            <div class="success">
+                Thank you! Your enrollment has been successfully recorded.<br>
+                You will now be redirected to our website.
+            </div>
+        `;
 
-    if(!payload.full_name || !payload.email || !payload.medical_license_number || !payload.country || !payload.state || !payload.city || !payload.specialty || !payload.experience_years || !payload.consent){
-      messagesEl.innerHTML = '<div class="error">Please fill all required fields and check consent.</div>';
-      return;
-    }
-
-    const btn = form.querySelector('button[type="submit"]');
-    btn.disabled = true;
-    btn.textContent = "Submitting...";
-
-    try {
-      const { data, error } = await supabase.from(TABLE_NAME).insert([payload]);
-      if(error){
-        messagesEl.innerHTML = `<div class="error">Submission failed: ${error.message}</div>`;
-      } else {
-        messagesEl.innerHTML = `<div class="success"><strong>Thank you for enrolling in the Kphotone Physician Panel!</strong><br/>We have received your details successfully. Redirecting to our website...</div>`;
         form.reset();
 
-        // Redirect after 3 seconds
         setTimeout(() => {
-          window.location.href = "https://www.kphotone.com";
+            window.location.href = "https://www.kphotone.com";
         }, 3000);
-      }
-    } catch (err){
-      messagesEl.innerHTML = `<div class="error">Unexpected error — check console.</div>`;
-      console.error(err);
-    } finally {
-      btn.disabled = false;
-      btn.textContent = "Submit Enrollment";
-    }
-  });
-  </script>
+    });
+</script>
+
 </body>
 </html>
