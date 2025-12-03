@@ -1,383 +1,270 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Kphotone Physician Enrollment</title>
-
-<!-- Google Font -->
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-
-<!-- Kphotone Theme -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Kphotone — Physician Enrollment</title>
 <style>
-    body {
-        font-family: 'Inter', sans-serif;
-        background: #f4f7fb;
-        margin: 0;
-        padding: 0;
-    }
-
-    .container {
-        width: 95%;
-        max-width: 650px;
-        margin: 40px auto;
-        background: #ffffff;
-        padding: 35px;
-        border-radius: 16px;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
-        border-top: 6px solid #0057b4; /* Kphotone Blue */
-    }
-
-    h2 {
-        margin-top: 0;
-        color: #0057b4;
-        font-weight: 600;
-        text-align: center;
-    }
-
-    label {
-        font-weight: 600;
-        color: #333;
-        display: block;
-        margin-bottom: 6px;
-    }
-
-    input, select {
-        width: 100%;
-        padding: 12px;
-        margin-bottom: 18px;
-        border: 1px solid #dfe3ea;
-        border-radius: 8px;
-        font-size: 15px;
-    }
-
-    input:focus, select:focus {
-        border-color: #0057b4;
-        outline: none;
-    }
-
-    button {
-        width: 100%;
-        padding: 14px;
-        background: #0057b4;
-        color: #fff;
-        border: 0;
-        border-radius: 8px;
-        font-size: 17px;
-        font-weight: 600;
-        cursor: pointer;
-    }
-
-    button:hover {
-        background: #003f82;
-    }
-
-    .hidden {
-        display: none;
-    }
+  :root{
+    --kp-blue:#00306E;
+    --kp-accent:#00A6FB;
+    --muted:#6b7280;
+    --bg:#f7fafc;
+    --card:#fff;
+    --radius:12px;
+    --maxw:900px;
+  }
+  body{ background:var(--bg); font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial; margin:0; padding:28px; display:flex; justify-content:center; }
+  .card{ width:100%; max-width:var(--maxw); background:var(--card); border-radius:var(--radius); box-shadow:0 10px 30px rgba(2,6,23,0.07); border-top:6px solid var(--kp-blue); padding:28px; }
+  h1{ margin:0 0 6px 0; color:var(--kp-blue); font-size:22px; }
+  p.lead{ margin:0 0 16px 0; color:var(--muted); }
+  form{ display:grid; gap:12px; }
+  label{ font-size:13px; color:#1f2937; display:block; margin-bottom:6px; }
+  input[type="text"], input[type="email"], input[type="tel"], select, textarea{
+    width:100%; padding:10px 12px; border-radius:10px; border:1px solid #e6e9ee; font-size:14px; box-sizing:border-box;
+  }
+  .row{ display:flex; gap:12px; }
+  .col{ flex:1; }
+  .btn{ background:var(--kp-blue); color:#fff; padding:12px 16px; border-radius:10px; border:none; font-weight:600; cursor:pointer; }
+  .small{ font-size:13px; color:var(--muted); }
+  .success{ padding:12px; background:#ecfdf5; color:#065f46; border-radius:10px; margin-top:8px; }
+  .error{ padding:12px; background:#fee2e2; color:#991b1b; border-radius:10px; margin-top:8px; }
+  @media (max-width:760px){ .row{ flex-direction:column; } }
 </style>
 </head>
-
 <body>
-<div class="container">
-<h2>Physician Enrollment Form</h2>
+  <div class="card">
+    <h1>Physician Panel Enrollment</h1>
+    <p class="lead">Join the Kphotone physician panel. Fill in accurate details — all data stored securely.</p>
 
-<form id="enrollForm">
+    <div id="messages" aria-live="polite"></div>
 
-    <!-- FULL NAME -->
-    <label>Full Name</label>
-    <input type="text" id="full_name" required />
+    <form id="enrollForm" autocomplete="on">
 
-    <!-- EMAIL -->
-    <label>Email</label>
-    <input type="email" id="email" required />
+      <!-- Personal -->
+      <div class="row">
+        <div class="col">
+          <label for="full_name">Full Name *</label>
+          <input id="full_name" name="full_name" type="text" required />
+        </div>
+        <div class="col">
+          <label for="email">Email *</label>
+          <input id="email" name="email" type="email" required />
+        </div>
+      </div>
 
-    <!-- PHONE -->
-    <label>Mobile Number</label>
-    <input type="text" id="phone" required />
+      <div class="row">
+        <div class="col">
+          <label for="phone">Mobile / WhatsApp *</label>
+          <input id="phone" name="phone" type="tel" placeholder="+91..." required />
+        </div>
+        <div class="col">
+          <label for="gender">Gender</label>
+          <select id="gender" name="gender">
+            <option value="">Prefer not to say</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </div>
 
-    <!-- COUNTRY -->
-    <label>Country</label>
-    <select id="country" required></select>
+      <!-- Identification -->
+      <label for="medical_license_number">Medical License / Registration ID *</label>
+      <input id="medical_license_number" name="medical_license_number" type="text" required placeholder="NPI / NMC / GMC / DHA / etc." />
 
-    <!-- STATE -->
-    <label>State</label>
-    <select id="state"></select>
-    <input type="text" id="state_other" class="hidden" placeholder="Enter your state" />
+      <label for="registration_id">Other Identification (optional)</label>
+      <input id="registration_id" name="registration_id" type="text" placeholder="State Council ID / License type" />
 
-    <!-- CITY -->
-    <label>City</label>
-    <select id="city"></select>
-    <input type="text" id="city_other" class="hidden" placeholder="Enter your city" />
+      <!-- Location: Country, State, City as open text -->
+      <div class="row">
+        <div class="col">
+          <label for="country">Country *</label>
+          <input id="country" name="country" type="text" placeholder="Enter country" required />
+        </div>
+        <div class="col">
+          <label for="state">State / Province *</label>
+          <input id="state" name="state" type="text" placeholder="Enter state / province" required />
+        </div>
+      </div>
 
-    <!-- SPECIALITY -->
-    <label>Speciality</label>
-    <select id="speciality"></select>
-    <input type="text" id="speciality_other" class="hidden" placeholder="Enter your speciality" />
+      <div class="row">
+        <div class="col">
+          <label for="city">City *</label>
+          <input id="city" name="city" type="text" placeholder="Enter city" required />
+        </div>
+      </div>
 
-    <!-- MEDICAL LICENSE -->
-    <label>Medical License / Registration Number</label>
-    <input type="text" id="license" required />
+      <!-- Professional -->
+      <div class="row">
+        <div class="col">
+          <label for="specialty">Primary Specialty *</label>
+          <select id="specialty" name="specialty" required>
+            <option value="">Select specialty</option>
+            <option>Dermatology</option>
+            <option>MOH Dermatology</option>
+            <option>Oncology</option>
+            <option>Hematology-Oncology</option>
+            <option>Surgery</option>
+            <option>Radiation Oncology</option>
+            <option>Cosmetology</option>
+            <option>General Medicine</option>
+            <option>Pediatrics</option>
+            <option>Endocrinology</option>
+            <option>Cardiology</option>
+            <option>Neurology</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="col">
+          <label for="subspecialty">Sub-specialty (optional)</label>
+          <input id="subspecialty" name="subspecialty" type="text" />
+        </div>
+      </div>
 
-    <!-- EXPERIENCE -->
-    <label>Years of Experience</label>
-    <input type="number" id="experience" min="0" required />
+      <div class="row">
+        <div class="col">
+          <label for="experience_years">Years of Experience *</label>
+          <select id="experience_years" name="experience_years" required>
+            <option value="">Select</option>
+            <option value="<1">&lt;1</option>
+            <option value="1-3">1–3</option>
+            <option value="4-7">4–7</option>
+            <option value="8-12">8–12</option>
+            <option value="13+">13+</option>
+          </select>
+        </div>
+        <div class="col">
+          <label for="patients_month">Patients per month</label>
+          <select id="patients_month" name="patients_month">
+            <option value="">Select</option>
+            <option>0–50</option>
+            <option>51–100</option>
+            <option>101–200</option>
+            <option>201–300</option>
+            <option>301+</option>
+          </select>
+        </div>
+      </div>
 
-    <button type="submit">Submit Enrollment</button>
-</form>
+      <label for="practice_type">Practice Type</label>
+      <select id="practice_type" name="practice_type">
+        <option value="">Select</option>
+        <option>Government Hospital</option>
+        <option>Private Clinic</option>
+        <option>Corporate Hospital</option>
+        <option>Teaching Hospital</option>
+        <option>Research Institute</option>
+        <option>Other</option>
+      </select>
 
-</div>
+      <div class="row">
+        <div class="col">
+          <label for="willing_for_surveys">Willing to participate in paid surveys?</label>
+          <select id="willing_for_surveys" name="willing_for_surveys">
+            <option value="">Select</option>
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+          </select>
+        </div>
+        <div class="col">
+          <label for="contact_pref">Preferred contact method</label>
+          <select id="contact_pref" name="contact_pref">
+            <option value="">Select</option>
+            <option>Email</option>
+            <option>WhatsApp</option>
+            <option>Phone</option>
+            <option>SMS</option>
+          </select>
+        </div>
+      </div>
 
-<!-- Supabase -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+      <label for="notes">Notes (optional)</label>
+      <textarea id="notes" name="notes" placeholder="Any additional details..."></textarea>
 
-<script>
-/* ------------------------------------------------------
-   SUPABASE CONFIG
-------------------------------------------------------- */
-const SUPABASE_URL = "https://qbezfrqsojypxpmyblbc.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFiZXpmcnFzb2p5cHhwbXlibGJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQwMjIxNDgsImV4cCI6MjA1OTU5ODE0OH0.FwfbMTlfPQ17OpoMXR3zDL13lwHwm3QlblV5dmHfEVc";
+      <label style="display:flex;gap:8px;align-items:center;">
+        <input id="consent" name="consent" type="checkbox" required />
+        <span class="small">I confirm I am a licensed medical professional and agree to be contacted for paid surveys. (Required)</span>
+      </label>
 
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      <div style="display:flex;gap:12px;align-items:center;margin-top:8px;">
+        <button class="btn" type="submit">Submit Enrollment</button>
+        <div class="small" style="margin-left:8px;">Data stored in Supabase</div>
+      </div>
 
+    </form>
 
-/* ------------------------------------------------------
-   COUNTRY, STATE, CITY DATA (Option 2)
-------------------------------------------------------- */
-const locationData = {
-    "USA": {
-        "states": {
-            "California": ["Los Angeles", "San Diego", "San Jose", "San Francisco"],
-            "Texas": ["Houston", "Dallas", "Austin", "San Antonio"],
-            "New York": ["New York", "Buffalo", "Rochester"]
-        }
-    },
-    "India": {
-        "states": {
-            "Maharashtra": ["Mumbai", "Pune", "Nagpur"],
-            "Delhi": ["New Delhi"],
-            "Karnataka": ["Bangalore", "Mysore"]
-        }
-    },
-    "Canada": {
-        "states": {
-            "Ontario": ["Toronto", "Ottawa"],
-            "British Columbia": ["Vancouver", "Victoria"]
-        }
-    },
-    "UK": {
-        "states": {
-            "England": ["London", "Manchester", "Birmingham"],
-            "Scotland": ["Edinburgh", "Glasgow"]
-        }
-    },
-    "Australia": {
-        "states": {
-            "New South Wales": ["Sydney"],
-            "Victoria": ["Melbourne"]
-        }
-    },
-    "Germany": {
-        "states": {
-            "Bavaria": ["Munich"],
-            "Berlin": ["Berlin"]
-        }
-    },
-    "France": {
-        "states": {
-            "Île-de-France": ["Paris"]
-        }
-    },
-    "Italy": {
-        "states": {
-            "Lombardy": ["Milan"],
-            "Lazio": ["Rome"]
-        }
-    },
-    "Spain": {
-        "states": {
-            "Madrid": ["Madrid"],
-            "Catalonia": ["Barcelona"]
-        }
-    },
-    "China": {
-        "states": {
-            "Beijing": ["Beijing"],
-            "Shanghai": ["Shanghai"]
-        }
-    },
-    "Japan": {
-        "states": {
-            "Tokyo": ["Tokyo"],
-            "Osaka": ["Osaka"]
-        }
-    },
-    "Brazil": {
-        "states": {
-            "São Paulo": ["São Paulo"],
-            "Rio de Janeiro": ["Rio de Janeiro"]
-        }
-    },
-    "Mexico": {
-        "states": {
-            "Mexico City": ["Mexico City"],
-            "Jalisco": ["Guadalajara"]
-        }
-    },
-    "South Africa": {
-        "states": {
-            "Gauteng": ["Johannesburg"],
-            "Western Cape": ["Cape Town"]
-        }
-    },
-    "UAE": {
-        "states": {
-            "Abu Dhabi": ["Abu Dhabi"],
-            "Dubai": ["Dubai"]
-        }
-    },
-    "Saudi Arabia": {
-        "states": {
-            "Riyadh Province": ["Riyadh"],
-            "Makkah": ["Jeddah", "Makkah"]
-        }
-    },
-    "Singapore": {
-        "states": {
-            "Singapore": ["Singapore"]
-        }
-    }
-};
+    <p class="small" style="margin-top:12px;">Questions? Contact: support@kphotone.com</p>
+  </div>
 
+  <!-- Supabase UMD -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
 
-/* ------------------------------------------------------
-   SPECIALITIES
-------------------------------------------------------- */
-const specialties = [
-"Cardiologist", "Dermatologist", "Neurologist", "Oncologist", "Psychiatrist",
-"General Physician", "Endocrinologist", "Nephrologist", "Surgeon",
-"Orthopedic Surgeon", "Pulmonologist", "Gastroenterologist",
-"Pediatrician", "Gynecologist", "ENT Specialist", "Ophthalmologist",
-"Urologist", "Radiologist", "Pathologist", "Family Medicine",
-"Emergency Medicine", "Internal Medicine", "Other"
-];
+  <script>
+  const SUPABASE_URL = "https://qbezfrqsojypxpmyblbc.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFiZXpmcnFzb2p5cHhwbXlibGJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQwMjIxNDgsImV4cCI6MjA1OTU5ODE0OH0.FwfbMTlfPQ17OpoMXR3zDL13lwHwm3QlblV5dmHfEVc";
+  const TABLE_NAME = "physician_enrollment";
+  const supabase = supabaseJs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+  const form = document.getElementById('enrollForm');
+  const messagesEl = document.getElementById('messages');
 
-/* ------------------------------------------------------
-   Populate country dropdown
-------------------------------------------------------- */
-const countrySelect = document.getElementById("country");
-const stateSelect = document.getElementById("state");
-const citySelect = document.getElementById("city");
-
-Object.keys(locationData).forEach(country => {
-    let option = new Option(country, country);
-    countrySelect.add(option);
-});
-countrySelect.add(new Option("Other", "Other"));
-
-
-/* ------------------------------------------------------
-   When country changes → load states
-------------------------------------------------------- */
-countrySelect.addEventListener("change", () => {
-    stateSelect.innerHTML = "";
-    citySelect.innerHTML = "";
-
-    document.getElementById("state_other").classList.add("hidden");
-    document.getElementById("city_other").classList.add("hidden");
-
-    let country = countrySelect.value;
-
-    if (country === "Other") {
-        stateSelect.classList.add("hidden");
-        document.getElementById("state_other").classList.remove("hidden");
-        citySelect.classList.add("hidden");
-        document.getElementById("city_other").classList.remove("hidden");
-        return;
-    }
-
-    stateSelect.classList.remove("hidden");
-    let states = Object.keys(locationData[country].states);
-
-    states.forEach(state => stateSelect.add(new Option(state, state)));
-    stateSelect.add(new Option("Other", "Other"));
-});
-
-
-/* ------------------------------------------------------
-   When state changes → load cities
-------------------------------------------------------- */
-stateSelect.addEventListener("change", () => {
-    citySelect.innerHTML = "";
-    document.getElementById("city_other").classList.add("hidden");
-
-    let country = countrySelect.value;
-    let state = stateSelect.value;
-
-    if (state === "Other") {
-        citySelect.classList.add("hidden");
-        document.getElementById("city_other").classList.remove("hidden");
-        return;
-    }
-
-    citySelect.classList.remove("hidden");
-
-    let cities = locationData[country].states[state];
-    cities.forEach(city => citySelect.add(new Option(city, city)));
-    citySelect.add(new Option("Other", "Other"));
-});
-
-citySelect.addEventListener("change", () => {
-    if (citySelect.value === "Other") {
-        document.getElementById("city_other").classList.remove("hidden");
-    }
-});
-
-
-/* ------------------------------------------------------
-   Populate specialties dropdown
-------------------------------------------------------- */
-const specialitySelect = document.getElementById("speciality");
-specialties.forEach(s => specialitySelect.add(new Option(s, s)));
-
-specialitySelect.addEventListener("change", () => {
-    if (specialitySelect.value === "Other") {
-        document.getElementById("speciality_other").classList.remove("hidden");
-    } else {
-        document.getElementById("speciality_other").classList.add("hidden");
-    }
-});
-
-
-/* ------------------------------------------------------
-   SUBMIT FORM
-------------------------------------------------------- */
-document.getElementById("enrollForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
+  form.addEventListener('submit', async (ev)=>{
+    ev.preventDefault();
+    messagesEl.innerHTML = "";
 
     const payload = {
-        full_name: full_name.value,
-        email: email.value,
-        phone: phone.value,
-        country: country.value,
-        state: state.value === "Other" ? state_other.value : state.value,
-        city: city.value === "Other" ? city_other.value : city.value,
-        speciality: speciality.value === "Other" ? speciality_other.value : speciality.value,
-        license: license.value,
-        experience: experience.value
+      full_name: form.full_name.value.trim(),
+      email: form.email.value.trim(),
+      phone: form.phone.value.trim(),
+      gender: form.gender.value,
+      medical_license_number: form.medical_license_number.value.trim(),
+      registration_id: form.registration_id.value.trim(),
+      country: form.country.value.trim(),
+      state: form.state.value.trim(),
+      city: form.city.value.trim(),
+      specialty: form.specialty.value,
+      subspecialty: form.subspecialty.value.trim(),
+      experience_years: form.experience_years.value,
+      patient_volume: form.patients_month.value,
+      practice_type: form.practice_type.value,
+      willing_for_surveys: form.willing_for_surveys.value==='true',
+      contact_pref: form.contact_pref.value,
+      notes: form.notes.value.trim(),
+      consent: form.consent.checked,
+      created_at: new Date().toISOString()
     };
 
-    const { error } = await supabase.from("physician_enrollment").insert([payload]);
-
-    if (error) {
-        alert("Error: " + error.message);
-    } else {
-        alert("Thank you! Your enrollment has been submitted.");
-        document.getElementById("enrollForm").reset();
+    if(!payload.full_name || !payload.email || !payload.medical_license_number || !payload.country || !payload.state || !payload.city || !payload.specialty || !payload.experience_years || !payload.consent){
+      messagesEl.innerHTML = '<div class="error">Please fill all required fields and check consent.</div>';
+      return;
     }
-});
-</script>
 
+    const btn = form.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.textContent = "Submitting...";
+
+    try {
+      const { data, error } = await supabase.from(TABLE_NAME).insert([payload]);
+      if(error){
+        messagesEl.innerHTML = `<div class="error">Submission failed: ${error.message}</div>`;
+      } else {
+        messagesEl.innerHTML = `<div class="success"><strong>Thank you for enrolling in the Kphotone Physician Panel!</strong><br/>We have received your details successfully. Redirecting to our website...</div>`;
+        form.reset();
+
+        // Redirect after 3 seconds
+        setTimeout(() => {
+          window.location.href = "https://www.kphotone.com";
+        }, 3000);
+      }
+    } catch (err){
+      messagesEl.innerHTML = `<div class="error">Unexpected error — check console.</div>`;
+      console.error(err);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Submit Enrollment";
+    }
+  });
+  </script>
 </body>
 </html>
