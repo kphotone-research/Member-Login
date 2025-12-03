@@ -1,68 +1,538 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kphotone Research | Member Login</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Kphotone — Physician Enrollment</title>
 <style>
-  body { font-family: 'Roboto', sans-serif; margin:0; padding:0; background:#f9f9f9; color:#003356; display:flex; justify-content:center; align-items:center; height:100vh; }
-  .login-box { background:#fff; padding:40px; border-radius:12px; box-shadow:0 8px 25px rgba(0,0,0,0.2); width:100%; max-width:400px; text-align:center; }
-  h2 { color:#003356; margin-bottom:20px; }
-  input { width:100%; padding:12px; margin:10px 0; border-radius:6px; border:1px solid #ccc; font-size:1rem; box-sizing:border-box; }
-  button { width:100%; padding:12px; margin:10px 0; border:none; border-radius:6px; font-size:1rem; cursor:pointer; background:#007bff; color:#fff; transition:0.3s; }
-  button:hover { background:#005bb5; }
-  #message { margin-top:12px; font-size:0.95rem; }
+  :root{
+    --kp-blue:#00306E;
+    --kp-accent:#00A6FB;
+    --muted:#6b7280;
+    --bg:#f7fafc;
+    --card:#fff;
+    --radius:12px;
+    --maxw:900px;
+  }
+  body{ background:var(--bg); font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial; margin:0; padding:28px; display:flex; justify-content:center; }
+  .card{ width:100%; max-width:var(--maxw); background:var(--card); border-radius:var(--radius); box-shadow:0 10px 30px rgba(2,6,23,0.07); border-top:6px solid var(--kp-blue); padding:28px; }
+  h1{ margin:0 0 6px 0; color:var(--kp-blue); font-size:22px; }
+  p.lead{ margin:0 0 16px 0; color:var(--muted); }
+  form{ display:grid; gap:12px; }
+  label{ font-size:13px; color:#1f2937; display:block; margin-bottom:6px; }
+  input[type="text"], input[type="email"], input[type="tel"], select, textarea, input[type="number"]{
+    width:100%; padding:10px 12px; border-radius:10px; border:1px solid #e6e9ee; font-size:14px; box-sizing:border-box;
+  }
+  .row{ display:flex; gap:12px; }
+  .col{ flex:1; }
+  .btn{ background:var(--kp-blue); color:#fff; padding:12px 16px; border-radius:10px; border:none; font-weight:600; cursor:pointer; }
+  .small{ font-size:13px; color:var(--muted); }
+  .success{ padding:12px; background:#ecfdf5; color:#065f46; border-radius:10px; }
+  .error{ padding:12px; background:#fee2e2; color:#991b1b; border-radius:10px; }
+  .hidden{ display:none; }
+  @media (max-width:760px){ .row{ flex-direction:column; } }
 </style>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
 </head>
 <body>
+  <div class="card">
+    <h1>Physician Panel Enrollment</h1>
+    <p class="lead">Join the Kphotone physician panel. Fill in accurate details — all data stored securely.</p>
 
-<div class="login-box">
-  <h2>Physician Login / Sign Up</h2>
-  <input type="email" id="email" placeholder="Enter your email" required />
-  <input type="password" id="password" placeholder="Enter your password" required />
-  <button id="loginBtn">Login</button>
-  <button id="signupBtn">Sign Up</button>
-  <p id="message"></p>
-</div>
+    <div id="messages" aria-live="polite"></div>
 
-<script>
-  const supabaseUrl = "https://qbezfrqsojypxpmyblbc.supabase.co";
-  const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFiZXpmcnFzb2p5cHhwbXlibGJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQwMjIxNDgsImV4cCI6MjA1OTU5ODE0OH0.FwfbMTlfPQ17OpoMXR3zDL13lwHwm3QlblV5dmHfEVc";
-  const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+    <form id="enrollForm" autocomplete="on">
 
-  const loginBtn = document.getElementById("loginBtn");
-  const signupBtn = document.getElementById("signupBtn");
-  const messageEl = document.getElementById("message");
+      <!-- Personal -->
+      <div class="row">
+        <div class="col">
+          <label for="full_name">Full Name *</label>
+          <input id="full_name" name="full_name" type="text" required />
+        </div>
+        <div class="col">
+          <label for="email">Email *</label>
+          <input id="email" name="email" type="email" required />
+        </div>
+      </div>
 
-  loginBtn.addEventListener("click", async () => {
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value.trim();
-    if (!email || !password) { messageEl.textContent="Enter email & password!"; messageEl.style.color="red"; return; }
+      <div class="row">
+        <div class="col">
+          <label for="phone">Mobile / WhatsApp *</label>
+          <input id="phone" name="phone" type="tel" placeholder="+91..." required />
+        </div>
+        <div class="col">
+          <label for="gender">Gender</label>
+          <select id="gender" name="gender">
+            <option value="">Prefer not to say</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </div>
 
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) { messageEl.textContent = error.message; messageEl.style.color = "red"; return; }
+      <!-- Identification -->
+      <label for="medical_license_number">Medical License / Registration ID *</label>
+      <input id="medical_license_number" name="medical_license_number" type="text" required placeholder="NPI / NMC / GMC / DHA / etc." />
 
-    messageEl.textContent = "Login successful! Redirecting..."; messageEl.style.color = "green";
-    window.location.href = `dashboard.html?user=${data.user.id}`;
+      <label for="registration_id">Other Identification (optional)</label>
+      <input id="registration_id" name="registration_id" type="text" placeholder="State Council ID / License type" />
+
+      <!-- Location: Country -> State -> City -->
+      <div class="row">
+        <div class="col">
+          <label for="country">Country *</label>
+          <select id="country" name="country" required></select>
+        </div>
+        <div class="col" id="stateContainer">
+          <label for="state">State / Province *</label>
+          <select id="state" name="state"></select>
+        </div>
+      </div>
+
+      <div class="row" id="cityRow">
+        <div class="col" id="cityContainer">
+          <label for="city">City *</label>
+          <select id="city" name="city"></select>
+        </div>
+        <div class="col hidden" id="cityOtherContainer">
+          <label for="city_other">City — Other (specify)</label>
+          <input id="city_other" name="city_other" type="text" placeholder="Enter city name" />
+        </div>
+      </div>
+
+      <!-- Professional -->
+      <div class="row">
+        <div class="col">
+          <label for="specialty">Primary Specialty *</label>
+          <select id="specialty" name="specialty" required>
+            <option value="">Select specialty</option>
+            <option>Dermatology</option>
+            <option>MOH Dermatology</option>
+            <option>Oncology</option>
+            <option>Hematology-Oncology</option>
+            <option>Surgery</option>
+            <option>Radiation Oncology</option>
+            <option>Cosmetology</option>
+            <option>General Medicine</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="col">
+          <label for="subspecialty">Sub-specialty (optional)</label>
+          <input id="subspecialty" name="subspecialty" type="text" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <label for="experience_years">Years of Experience *</label>
+          <select id="experience_years" name="experience_years" required>
+            <option value="">Select</option>
+            <option value="<1">&lt;1</option>
+            <option value="1-3">1–3</option>
+            <option value="4-7">4–7</option>
+            <option value="8-12">8–12</option>
+            <option value="13+">13+</option>
+          </select>
+        </div>
+        <div class="col">
+          <label for="patients_month">Patients per month</label>
+          <select id="patients_month" name="patients_month">
+            <option value="">Select</option>
+            <option>0–50</option>
+            <option>51–100</option>
+            <option>101–200</option>
+            <option>201–300</option>
+            <option>301+</option>
+          </select>
+        </div>
+      </div>
+
+      <label for="practice_type">Practice Type</label>
+      <select id="practice_type" name="practice_type">
+        <option value="">Select</option>
+        <option>Government Hospital</option>
+        <option>Private Clinic</option>
+        <option>Corporate Hospital</option>
+        <option>Teaching Hospital</option>
+        <option>Research Institute</option>
+        <option>Other</option>
+      </select>
+
+      <div class="row">
+        <div class="col">
+          <label for="willing_for_surveys">Willing to participate in paid surveys?</label>
+          <select id="willing_for_surveys" name="willing_for_surveys">
+            <option value="">Select</option>
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+          </select>
+        </div>
+        <div class="col">
+          <label for="contact_pref">Preferred contact method</label>
+          <select id="contact_pref" name="contact_pref">
+            <option value="">Select</option>
+            <option>Email</option>
+            <option>WhatsApp</option>
+            <option>Phone</option>
+            <option>SMS</option>
+          </select>
+        </div>
+      </div>
+
+      <label for="notes">Notes (optional)</label>
+      <textarea id="notes" name="notes" placeholder="Any additional details..."></textarea>
+
+      <label style="display:flex;gap:8px;align-items:center;">
+        <input id="consent" name="consent" type="checkbox" required />
+        <span class="small">I confirm I am a licensed medical professional and agree to be contacted for paid surveys. (Required)</span>
+      </label>
+
+      <div style="display:flex;gap:12px;align-items:center;margin-top:8px;">
+        <button class="btn" type="submit">Submit Enrollment</button>
+        <div class="small" style="margin-left:8px;">Data stored in Supabase</div>
+      </div>
+
+    </form>
+
+    <p class="small" style="margin-top:12px;">Questions? Contact: support@kphotone.com</p>
+  </div>
+
+  <!-- Supabase UMD -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
+
+  <script>
+  /***********************
+   * CONFIG - replace these
+   ***********************/
+  const SUPABASE_URL = "https://qbezfrqsojypxpmyblbc.supabase.co";         // <-- REPLACE
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFiZXpmcnFzb2p5cHhwbXlibGJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQwMjIxNDgsImV4cCI6MjA1OTU5ODE0OH0.FwfbMTlfPQ17OpoMXR3zDL13lwHwm3QlblV5dmHfEVc";              // <-- REPLACE
+  const TABLE_NAME = "physician_enrollment";                      // your table
+
+  const supabase = supabaseJs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  /***********************
+   * Country / State / City data (Option 2 countries)
+   ***********************/
+  const countriesList = [
+    "United States","India","Canada","United Kingdom","Australia","Germany","France","Italy","Spain",
+    "China","Japan","Brazil","Mexico","South Africa","United Arab Emirates","Saudi Arabia","Singapore"
+  ];
+
+  // Minimal state lists for each country (sufficient for selection; user can choose 'Other' when needed)
+  const statesByCountry = {
+    "United States": [
+      "Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia",
+      "Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts",
+      "Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey",
+      "New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island",
+      "South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming","Other (please specify)"
+    ],
+    "India": [
+      "Andhra Pradesh","Arunachal Pradesh","Assam","Bihar","Chhattisgarh","Goa","Gujarat","Haryana","Himachal Pradesh",
+      "Jharkhand","Karnataka","Kerala","Madhya Pradesh","Maharashtra","Manipur","Meghalaya","Mizoram","Nagaland","Odisha",
+      "Punjab","Rajasthan","Sikkim","Tamil Nadu","Telangana","Tripura","Uttar Pradesh","Uttarakhand","West Bengal",
+      "Andaman and Nicobar Islands","Chandigarh","Dadra & Nagar Haveli and Daman & Diu","Delhi","Jammu & Kashmir",
+      "Ladakh","Lakshadweep","Puducherry","Other (please specify)"
+    ],
+    "Canada": [
+      "Alberta","British Columbia","Manitoba","New Brunswick","Newfoundland and Labrador","Nova Scotia","Ontario",
+      "Prince Edward Island","Quebec","Saskatchewan","Northwest Territories","Nunavut","Yukon","Other (please specify)"
+    ],
+    "United Kingdom": [
+      "England","Scotland","Wales","Northern Ireland","Other (please specify)"
+    ],
+    "Australia": [
+      "New South Wales","Victoria","Queensland","Western Australia","South Australia","Tasmania","Australian Capital Territory","Northern Territory","Other (please specify)"
+    ],
+    "Germany": [
+      "Baden-Württemberg","Bavaria","Berlin","Brandenburg","Bremen","Hamburg","Hesse","Lower Saxony","Mecklenburg-Vorpommern",
+      "North Rhine-Westphalia","Rhineland-Palatinate","Saarland","Saxony","Saxony-Anhalt","Schleswig-Holstein","Thuringia","Other (please specify)"
+    ],
+    "France": [
+      "Auvergne-Rhône-Alpes","Bourgogne-Franche-Comté","Brittany","Centre-Val de Loire","Corsica","Grand Est","Hauts-de-France",
+      "Île-de-France","Normandy","Nouvelle-Aquitaine","Occitanie","Pays de la Loire","Provence-Alpes-Côte d'Azur","Other (please specify)"
+    ],
+    "Italy": [
+      "Abruzzo","Basilicata","Calabria","Campania","Emilia-Romagna","Friuli-Venezia Giulia","Lazio","Liguria","Lombardy",
+      "Marche","Molise","Piedmont","Apulia","Sardinia","Sicily","Trentino-Alto Adige","Umbria","Veneto","Other (please specify)"
+    ],
+    "Spain": [
+      "Andalusia","Aragon","Asturias","Balearic Islands","Basque Country","Canary Islands","Cantabria","Castile and León",
+      "Castilla-La Mancha","Catalonia","Extremadura","Galicia","La Rioja","Community of Madrid","Region of Murcia","Navarre","Valencian Community","Other (please specify)"
+    ],
+    "China": [
+      "Beijing","Shanghai","Tianjin","Chongqing","Hebei","Henan","Yunnan","Liaoning","Heilongjiang","Hunan","Anhui","Shandong","Xinjiang",
+      "Jiangsu","Zhejiang","Jiangxi","Hubei","Guangxi","Gansu","Shanxi","Inner Mongolia","Shaanxi","Jilin","Fujian","Guizhou","Other (please specify)"
+    ],
+    "Japan": [
+      "Hokkaido","Aomori","Iwate","Miyagi","Akita","Yamagata","Fukushima","Ibaraki","Tochigi","Gunma","Saitama","Chiba","Tokyo",
+      "Kanagawa","Niigata","Toyama","Ishikawa","Fukui","Yamanashi","Nagano","Gifu","Shizuoka","Aichi","Mie","Other (please specify)"
+    ],
+    "Brazil": [
+      "Acre","Alagoas","Amapá","Amazonas","Bahia","Ceará","Distrito Federal","Espírito Santo","Goiás","Maranhão","Mato Grosso","Mato Grosso do Sul",
+      "Minas Gerais","Pará","Paraíba","Paraná","Pernambuco","Piauí","Rio de Janeiro","Rio Grande do Norte","Rio Grande do Sul","Rondônia","Roraima","Santa Catarina","Sergipe","Tocantins","Other (please specify)"
+    ],
+    "Mexico": [
+      "Aguascalientes","Baja California","Baja California Sur","Campeche","Chiapas","Chihuahua","Ciudad de México","Coahuila","Colima","Durango",
+      "Guanajuato","Guerrero","Hidalgo","Jalisco","México","Michoacán","Morelos","Nayarit","Nuevo León","Oaxaca","Puebla","Querétaro","Quintana Roo",
+      "San Luis Potosí","Sinaloa","Sonora","Tabasco","Tamaulipas","Tlaxcala","Veracruz","Yucatán","Zacatecas","Other (please specify)"
+    ],
+    "South Africa": [
+      "Eastern Cape","Free State","Gauteng","KwaZulu-Natal","Limpopo","Mpumalanga","Northern Cape","North West","Western Cape","Other (please specify)"
+    ],
+    "United Arab Emirates": [
+      "Abu Dhabi","Dubai","Sharjah","Ajman","Umm Al Quwain","Ras Al Khaimah","Fujairah","Other (please specify)"
+    ],
+    "Saudi Arabia": [
+      "Riyadh","Makkah","Medina","Qassim","Eastern Province","Asir","Tabuk","Hail","Northern Borders","Jazan","Najran","Al-Baha","Other (please specify)"
+    ],
+    "Singapore": [
+      "Singapore"
+    ]
+  };
+
+  // Simple city suggestions per country (major cities)
+  const citiesByCountry = {
+    "United States": ["New York","Los Angeles","Chicago","Houston","Phoenix","Other (please specify)"],
+    "India": ["Mumbai","Delhi","Bengaluru","Chennai","Kolkata","Hyderabad","Pune","Other (please specify)"],
+    "Canada": ["Toronto","Vancouver","Montreal","Calgary","Ottawa","Other (please specify)"],
+    "United Kingdom": ["London","Birmingham","Manchester","Leeds","Glasgow","Other (please specify)"],
+    "Australia": ["Sydney","Melbourne","Brisbane","Perth","Adelaide","Other (please specify)"],
+    "Germany": ["Berlin","Hamburg","Munich","Cologne","Frankfurt","Other (please specify)"],
+    "France": ["Paris","Marseille","Lyon","Toulouse","Nice","Other (please specify)"],
+    "Italy": ["Rome","Milan","Naples","Turin","Palermo","Other (please specify)"],
+    "Spain": ["Madrid","Barcelona","Valencia","Seville","Zaragoza","Other (please specify)"],
+    "China": ["Beijing","Shanghai","Guangzhou","Shenzhen","Chengdu","Other (please specify)"],
+    "Japan": ["Tokyo","Osaka","Nagoya","Sapporo","Fukuoka","Other (please specify)"],
+    "Brazil": ["São Paulo","Rio de Janeiro","Brasília","Salvador","Fortaleza","Other (please specify)"],
+    "Mexico": ["Mexico City","Guadalajara","Monterrey","Puebla","Tijuana","Other (please specify)"],
+    "South Africa": ["Johannesburg","Cape Town","Durban","Pretoria","Port Elizabeth","Other (please specify)"],
+    "United Arab Emirates": ["Dubai","Abu Dhabi","Sharjah","Ajman","Ras Al Khaimah","Other (please specify)"],
+    "Saudi Arabia": ["Riyadh","Jeddah","Mecca","Medina","Dammam","Other (please specify)"],
+    "Singapore": ["Singapore","Other (please specify)"]
+  };
+
+  /***********************
+   * DOM references
+   ***********************/
+  const countryEl = document.getElementById('country');
+  const stateEl = document.getElementById('state');
+  const stateContainer = document.getElementById('stateContainer');
+  const cityEl = document.getElementById('city');
+  const cityContainer = document.getElementById('cityContainer');
+  const cityOtherContainer = document.getElementById('cityOtherContainer');
+  const cityOtherInput = document.getElementById('city_other');
+  const messagesEl = document.getElementById('messages');
+  const form = document.getElementById('enrollForm');
+
+  /***********************
+   * Populate countries (Option 2 countries first)
+   ***********************/
+  function populateCountrySelect(){
+    countryEl.innerHTML = "<option value=''>Select Country</option>";
+    countriesList.forEach(c=>{
+      const opt = document.createElement('option'); opt.value = c; opt.textContent = c;
+      countryEl.appendChild(opt);
+    });
+    // Add a separator and "Other country" option for manual countries
+    const optSep = document.createElement('option'); optSep.disabled=true; optSep.textContent="──────────";
+    countryEl.appendChild(optSep);
+    const otherOpt = document.createElement('option'); otherOpt.value="Other"; otherOpt.textContent="Other (please specify)";
+    countryEl.appendChild(otherOpt);
+  }
+
+  /***********************
+   * Helpers to populate states & cities
+   ***********************/
+  function populateStateSelect(country){
+    stateEl.innerHTML = "";
+    if(statesByCountry[country]){
+      statesByCountry[country].forEach(s=>{
+        const o = document.createElement('option'); o.value = s; o.textContent = s;
+        stateEl.appendChild(o);
+      });
+      // ensure we show select element
+      if(stateEl.tagName.toLowerCase() !== 'select'){
+        // replace with select
+        const newSelect = document.createElement('select');
+        newSelect.id = 'state'; newSelect.name='state';
+        stateContainer.innerHTML = '<label for="state">State / Province *</label>';
+        stateContainer.appendChild(newSelect);
+        stateEl = document.getElementById('state');
+        // attach event after replace
+      }
+    } else {
+      // No prepared list: replace with text input
+      stateContainer.innerHTML = '<label for="state_text">State / Province *</label><input id="state_text" name="state" type="text" placeholder="Enter state or province" required />';
+    }
+  }
+
+  function populateCitySelect(country){
+    // Reset city other input hide
+    cityOtherContainer.classList.add('hidden');
+    cityOtherInput.value = "";
+
+    if(citiesByCountry[country]){
+      cityEl.innerHTML = "";
+      citiesByCountry[country].forEach(c=>{
+        const o = document.createElement('option'); o.value = c; o.textContent = c;
+        cityEl.appendChild(o);
+      });
+      // ensure select exists
+      if(cityEl.tagName.toLowerCase() !== 'select'){
+        cityContainer.innerHTML = '<label for="city">City *</label><select id="city" name="city"></select>';
+        // reassign
+        cityEl = document.getElementById('city');
+      }
+    } else {
+      // fallback: text input for city
+      cityContainer.innerHTML = '<label for="city_text">City *</label><input id="city_text" name="city" type="text" placeholder="Enter city" required />';
+    }
+  }
+
+  /***********************
+   * Init selects
+   ***********************/
+  populateCountrySelect();
+
+  // When country changes: populate state & city
+  countryEl.addEventListener('change', (e)=>{
+    const v = e.target.value;
+    messagesEl.innerHTML = "";
+    // if Other, replace with text inputs for state & city
+    if(v === "Other"){
+      stateContainer.innerHTML = '<label for="state_other">State / Province *</label><input id="state_other" name="state" type="text" placeholder="Enter state / province" required />';
+      cityContainer.innerHTML = '<label for="city_other_text">City *</label><input id="city_other_text" name="city" type="text" placeholder="Enter city" required />';
+      cityOtherContainer.classList.add('hidden');
+      return;
+    }
+    // populate state list or input
+    populateStateSelect(v);
+
+    // populate city list or input
+    populateCitySelect(v);
+
+    // attach listener on city select to show "Other" text input when chosen
+    setTimeout(()=>{ // small delay if select was recreated
+      const citySelect = document.getElementById('city');
+      if(citySelect){
+        citySelect.addEventListener('change', (ev)=>{
+          if(ev.target.value === 'Other (please specify)'){
+            cityOtherContainer.classList.remove('hidden');
+          } else {
+            cityOtherContainer.classList.add('hidden');
+            cityOtherInput.value = "";
+          }
+        });
+      }
+    }, 50);
   });
 
-  signupBtn.addEventListener("click", async () => {
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value.trim();
-    if (!email || !password) { messageEl.textContent="Enter email & password!"; messageEl.style.color="red"; return; }
-
-    const { data, error } = await supabase.auth.signUp({ email, password });
-    if (error) { messageEl.textContent = error.message; messageEl.style.color="red"; return; }
-
-    // Insert new physician row if not exists
-    await supabase.from("physicians").upsert({ id: data.user.id, email, name: "", specialty: "" });
-
-    messageEl.textContent = "Sign up successful! Redirecting..."; messageEl.style.color="green";
-    window.location.href = `dashboard.html?user=${data.user.id}`;
+  // Also handle if state select replaced/other selected - allow manual typing when 'Other' is chosen
+  // (Some lists include "Other (please specify)" option in statesByCountry)
+  // we add a delegated listener
+  document.addEventListener('change', (ev)=>{
+    if(ev.target && ev.target.id === 'state'){
+      if(ev.target.value && ev.target.value.startsWith('Other')){
+        // replace state select with text input
+        stateContainer.innerHTML = '<label for="state_other">State / Province *</label><input id="state_other" name="state" type="text" placeholder="Enter state / province" required />';
+      }
+    }
   });
-</script>
 
+  /***********************
+   * Form submit -> Supabase
+   ***********************/
+  form.addEventListener('submit', async (ev)=>{
+    ev.preventDefault();
+    messagesEl.innerHTML = "";
+
+    // gather values safely (handle dynamic state/city inputs)
+    const getVal = (name) => {
+      const el = form.elements[name];
+      if(!el) return "";
+      if(el.tagName === 'SELECT' || el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') return el.value;
+      // if radio group or NodeList, try value
+      return el.value || "";
+    };
+
+    // For state & city, there might be input fields with different ids
+    let stateVal = "";
+    if(document.getElementById('state')) stateVal = document.getElementById('state').value || "";
+    else if(document.getElementById('state_text')) stateVal = document.getElementById('state_text').value || "";
+    else if(document.getElementById('state_other')) stateVal = document.getElementById('state_other').value || "";
+
+    let cityVal = "";
+    if(document.getElementById('city')) {
+      const cval = document.getElementById('city').value || "";
+      if(cval === 'Other (please specify)'){
+        cityVal = (document.getElementById('city_other') && document.getElementById('city_other').value) || "";
+      } else cityVal = cval;
+    } else if(document.getElementById('city_text')) cityVal = document.getElementById('city_text').value || "";
+    else if(document.getElementById('city_other_text')) cityVal = document.getElementById('city_other_text').value || "";
+
+    const payload = {
+      full_name: (document.getElementById('full_name').value || "").trim(),
+      email: (document.getElementById('email').value || "").trim(),
+      phone: (document.getElementById('phone').value || "").trim(),
+      gender: (document.getElementById('gender').value || "").trim(),
+      medical_license_number: (document.getElementById('medical_license_number').value || "").trim(),
+      registration_id: (document.getElementById('registration_id').value || "").trim(),
+      country: (document.getElementById('country').value || "").trim(),
+      state: stateVal.trim(),
+      city: cityVal.trim(),
+      specialty: (document.getElementById('specialty').value || "").trim(),
+      subspecialty: (document.getElementById('subspecialty').value || "").trim(),
+      experience_years: (document.getElementById('experience_years').value || "").trim(),
+      patient_volume: (document.getElementById('patients_month').value || "").trim(),
+      practice_type: (document.getElementById('practice_type').value || "").trim(),
+      willing_for_surveys: (document.getElementById('willing_for_surveys').value === 'true'),
+      contact_pref: (document.getElementById('contact_pref').value || "").trim(),
+      notes: (document.getElementById('notes').value || "").trim(),
+      consent: !!document.getElementById('consent').checked,
+      created_at: new Date().toISOString()
+    };
+
+    // basic validation
+    if(!payload.full_name || !payload.email || !payload.medical_license_number || !payload.country || !payload.state || !payload.city || !payload.specialty || !payload.experience_years || !payload.consent){
+      messagesEl.innerHTML = '<div class="error">Please fill required fields: Full name, Email, License, Country, State, City, Specialty, Experience, Consent.</div>';
+      return;
+    }
+
+    // show submitting
+    const btn = form.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.textContent = "Submitting...";
+
+    try {
+      const { data: inserted, error } = await supabase
+        .from(TABLE_NAME)
+        .insert([payload]);
+
+      if(error){
+        console.error("Supabase error:", error);
+        messagesEl.innerHTML = `<div class="error">Submission failed: ${error.message}</div>`;
+      } else {
+        messagesEl.innerHTML = `<div class="success">Thank you — your enrollment has been submitted.</div>`;
+        form.reset();
+        // reset state/city selects to defaults
+        populateCountrySelect();
+        stateContainer.innerHTML = '<label for="state">State / Province *</label><select id="state" name="state"></select>';
+        cityContainer.innerHTML = '<label for="city">City *</label><select id="city" name="city"></select>';
+        cityOtherContainer.classList.add('hidden');
+      }
+    } catch (err) {
+      console.error(err);
+      messagesEl.innerHTML = `<div class="error">Unexpected error — check console.</div>`;
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Submit Enrollment";
+    }
+  });
+
+  // On first load, select blank country to force user to choose
+  countryEl.selectedIndex = 0;
+  </script>
 </body>
 </html>
